@@ -65,8 +65,3 @@ O estado é salvo em `localStorage` (chave `mm-a11y`).
      - Python: `python -m http.server 8080` (acesse `http://localhost:8080`)
 
 Não há backend — tudo roda no navegador.
-
----
-
-## 📂 Estrutura (essencial)
-
