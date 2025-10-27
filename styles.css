@@ -1,0 +1,252 @@
+/* ===========================
+   Fonte BucklaneScript
+   =========================== */
+@font-face{
+  font-family: 'BucklaneScript';
+  src:
+    url('assets/BucklaneScript_PERSONAL_USE_ONLY.otf') format('opentype'),
+    url('assets/BucklaneScript.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* ===========================
+   Variáveis (tema claro)
+   =========================== */
+:root{
+  --mickey-red:#E30613;
+  --minnie-pink:#FFB6C1;
+  --mickey-yellow:#FFD100;
+
+  --bg:#f7f7f8;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --text:#111111;
+  --border:#e5e7eb;
+
+  --ok:#16a34a;
+  --danger:#dc2626;
+
+  --radius:16px;
+  --shadow:0 10px 30px rgba(0,0,0,.08);
+
+  --focus: 0 0 0 3px rgba(227,6,19,.28);
+  --focus-contrast: 0 0 0 4px rgba(0,0,0,.65);
+}
+
+/* ===========================
+   Acessibilidade (ligada)
+   =========================== */
+html[data-a11y="on"]{
+  --bg:#ffffff;
+  --card:#ffffff;
+  --text:#000000;
+  --muted:#1f2937;
+  --border:#111827;
+  --focus: 0 0 0 4px #000; /* foco mais forte */
+}
+html[data-a11y="on"] *{
+  letter-spacing: 0.2px;
+}
+html[data-a11y="on"] body{
+  font-size: 17px;
+  line-height: 1.6;
+}
+html[data-a11y="on"] .btn{
+  min-height: 48px;
+  min-width: 48px;
+  border-width: 2px;
+}
+html[data-a11y="on"] .card,
+html[data-a11y="on"] .toolbar,
+html[data-a11y="on"] .brand{
+  background: #fff !important; /* remove gradiente p/ contraste */
+  color: var(--text) !important;
+  border: 2px solid var(--border);
+}
+html[data-a11y="on"] .brand-text h1{ font-size: 42px }
+html[data-a11y="on"] .summary-item .value{ font-size: 22px }
+html[data-a11y="on"] #txTable th,
+html[data-a11y="on"] #txTable td{ font-size: 16px }
+
+/* reduzir movimento se a11y on */
+html[data-a11y="on"] *{
+  transition-duration: .01ms !important;
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+}
+
+/* ===========================
+   Base
+   =========================== */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:#000000;
+  color:var(--text);
+  font:500 15.5px/1.5 "Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  -webkit-text-size-adjust:100%;
+  text-rendering:optimizeLegibility;
+}
+
+:focus-visible{
+  outline:none;
+  box-shadow:var(--focus);
+  border-radius:10px;
+}
+
+.app{max-width:1200px;margin:auto;padding:24px}
+
+/* ===========================
+   Cabeçalho
+   =========================== */
+.brand{
+  background:linear-gradient(135deg,var(--mickey-yellow),#fff);
+  border-radius:var(--radius);
+  padding:18px;
+  color:#1a1a1a;
+  box-shadow:var(--shadow);
+  display:grid;
+  grid-template-columns:auto 1fr auto auto;
+  align-items:center;
+  gap:16px;
+}
+.logo{height:96px;width:auto;object-fit:contain;filter:drop-shadow(0 6px 16px rgba(0,0,0,.08))}
+.brand-text h1{
+  margin:0 0 6px 0;
+  font-size:48px;
+  line-height:1.05;
+  font-family:'BucklaneScript',cursive;
+  letter-spacing:.2px;
+  color:#111;
+}
+.brand .muted{margin:0;color:#222;opacity:.8;font-weight:600}
+.status-img{width:112px;height:80px;display:flex;align-items:center;justify-content:center}
+.status-img img{max-height:80px;max-width:112px;object-fit:contain;filter:drop-shadow(0 6px 16px rgba(0,0,0,.12))}
+.actions{display:flex;gap:10px}
+
+/* ===========================
+   Toolbar
+   =========================== */
+.toolbar{
+  display:flex;gap:16px;align-items:center;justify-content:space-between;margin:18px 0;
+  background:linear-gradient(135deg,var(--mickey-yellow),#fff);
+  border-radius:var(--radius);
+  padding:18px;
+  color:#1a1a1a;
+  box-shadow:var(--shadow);
+}
+.filters{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#111}
+select,input[type="date"],input[type="text"],input[type="number"]{
+  padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#fff;min-width:160px;color:#111;
+}
+select:focus-visible,input:focus-visible{box-shadow:var(--focus)}
+/* grupo de botões IO com mesmo tamanho */
+.btn-group{display:flex;gap:10px;flex-wrap:wrap}
+.btn.same{min-width: 172px; justify-content:center}
+
+/* ===========================
+   Botões
+   =========================== */
+.btn{
+  border:none;padding:10px 16px;border-radius:12px;cursor:pointer;font-weight:800;
+  min-height:44px;min-width:44px;display:inline-flex;align-items:center;gap:8px;
+  transition:transform .06s ease,opacity .2s ease,background .2s ease,color .2s ease,border-color .2s ease;
+}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--mickey-red);color:#fff}
+.btn.primary:hover{opacity:.95}
+.btn.outline{background:transparent;border:2px solid var(--mickey-red);color:var(--mickey-red)}
+.btn.outline:hover{background:rgba(227,6,19,.08)}
+.btn.ghost{background:transparent;border:2px solid rgba(0,0,0,.20);color:#111}
+
+/* ===========================
+   Cards
+   =========================== */
+.card{
+  background:linear-gradient(195deg,var(--mickey-yellow),#fff);
+  border-radius:var(--radius);
+  padding:16px;
+  color:#111;
+  box-shadow:var(--shadow);
+}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.card-head h2{margin:0;font-size:18px;color:#111;font-weight:900}
+
+/* ===========================
+   Summary
+   =========================== */
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}
+.summary-item{background:var(--card);border-radius:14px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.summary-item .label{font-size:12px;color:var(--muted)}
+.summary-item .value{font-size:20px;font-weight:900}
+.value.ok{color:var(--ok)} .value.danger{color:var(--danger)}
+
+/* ===========================
+   Grid (tabela + gráfico)
+   =========================== */
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px}
+.table-wrap{overflow:auto;border-radius:12px}
+#txTable{width:100%;border-collapse:separate;border-spacing:0}
+#txTable th,#txTable td{
+  padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle;color:var(--text)
+}
+#txTable th{position:sticky;top:0;z-index:1;font-weight:900}
+#txTable td.num{text-align:right}
+.row-actions{display:flex;gap:8px;justify-content:flex-end}
+#txTable tbody tr:nth-child(odd) td{background:transparent}
+
+/* ===========================
+   Modal
+   =========================== */
+::backdrop{background:rgba(0,0,0,.35)}
+#txModal{border:none;border-radius:16px;padding:0;background:var(--card);color:var(--text);box-shadow:var(--shadow);max-inline-size:min(720px,92vw)}
+#txModal .modal{padding:18px}
+.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.fields label{font-size:13px}
+.actions{display:flex;gap:10px;margin-top:12px}
+
+/* ===========================
+   Footer
+   =========================== */
+.site-footer{
+  margin-top:24px;padding:18px;border:1px solid var(--border);
+  text-align:center;color:var(--muted);
+  background:linear-gradient(135deg,var(--mickey-yellow),#fff);
+  border-radius:var(--radius);
+  padding:3px;
+  color:#000000;
+  box-shadow:var(--shadow);
+}
+.site-footer a{color:inherit;text-decoration:underline}
+.site-footer .sep{margin:0 8px;opacity:.6}
+
+/* ===========================
+   Responsividade
+   =========================== */
+@media (max-width:1200px){ .logo{height:84px} }
+@media (max-width:992px){
+  .grid{grid-template-columns:1fr}
+  .fields{grid-template-columns:1fr 1fr}
+  .brand{grid-template-columns:auto 1fr auto}
+  .brand-text h1{font-size:42px}
+}
+@media (max-width:768px){
+  .toolbar{flex-direction:column;align-items:stretch;gap:12px}
+  .brand{grid-template-columns:auto 1fr;grid-auto-rows:min-content}
+  .status-img{order:3;grid-column:1 / -1;justify-content:flex-start}
+  .actions{order:4;grid-column:1 / -1;justify-content:flex-start}
+  .brand-text .muted{display:none}
+  .brand-text h1{font-size:36px}
+  .logo{height:72px}
+}
+@media (max-width:576px){
+  .app{padding:14px}
+  .fields{grid-template-columns:1fr}
+  .brand-text h1{font-size:32px}
+  .logo{height:64px}
+  .status-img{width:100%;height:auto}
+  .summary{grid-template-columns:1fr}
+  #txTable th,#txTable td{padding:10px 10px}
+}

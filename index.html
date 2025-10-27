@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Controle Financeiro — Mickey & Minnie</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Font Awesome 5 (ícones) -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- SheetJS (XLSX) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.20.1/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <!-- ========== HEADER ========== -->
+    <header class="brand" role="banner">
+      <!-- LOGO -->
+      <img src="assets/Logo-png.png" alt="Logo do Controle Financeiro" class="logo" loading="lazy"/>
+
+      <!-- Título + subtítulo -->
+      <div class="brand-text">
+        <h1>Controle Financeiro</h1>
+        <p class="muted">Registre entradas/saídas, filtre por mês/ano e acompanhe a fatia de despesas por categoria.</p>
+      </div>
+
+      <!-- Feedback por imagem -->
+      <div class="status-img" aria-live="polite">
+        <img id="statusImg" src="assets/status_neutral.png" alt="Status do mês" loading="lazy"/>
+      </div>
+
+      <!-- Botão Acessibilidade (discreto) -->
+      <div class="actions">
+        <button id="btnA11y" class="btn ghost" title="Acessibilidade" aria-label="Alternar acessibilidade" aria-pressed="false">
+          <i class="fas fa-universal-access" aria-hidden="true"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ========== TOOLBAR / FILTROS ========== -->
+    <section class="toolbar" aria-label="Filtros e ações">
+      <div class="filters">
+        <label for="monthSelect">Mês
+          <select id="monthSelect"></select>
+        </label>
+        <label for="yearSelect">Ano
+          <select id="yearSelect"></select>
+        </label>
+        <button id="btnAdd" class="btn primary">
+          <i class="fas fa-plus" aria-hidden="true"></i> Nova transação
+        </button>
+      </div>
+
+      <!-- Grupo IO: Importar / Exportar / Limpar (mesmo estilo e tamanho) -->
+      <div class="io btn-group" role="group" aria-label="Importação, exportação e limpeza">
+        <label class="btn outline same" for="fileInput"> Importa XLSX
+          <input id="fileInput" type="file" accept=".xlsx,.xls" hidden />
+        </label>
+        <button id="btnExport" class="btn outline same"> Exporta XLSX
+        </button>
+        <button id="btnReset" class="btn outline same">Limpa tudo
+        </button>
+      </div>
+    </section>
+
+    <!-- ========== RESUMO ========== -->
+    <section class="summary card" aria-label="Resumo financeiro">
+      <div class="summary-item">
+        <span class="label">Entradas:</span>
+        <span id="sumIn" class="value ok">R$ 0,00</span>
+      </div>
+      <div class="summary-item">
+        <span class="label">Saídas:</span>
+        <span id="sumOut" class="value danger">R$ 0,00</span>
+      </div>
+      <div class="summary-item">
+        <span class="label">Saldo:</span>
+        <span id="sumBalance" class="value">R$ 0,00</span>
+      </div>
+    </section>
+
+    <!-- ========== TABELA + GRÁFICO ========== -->
+    <main class="grid">
+      <section class="card" aria-label="Lançamentos">
+        <div class="card-head">
+          <h2>Despesas por Categoria (%)</h2>
+        </div>
+        <div class="table-wrap" role="region" aria-label="Tabela de lançamentos">
+          <table id="txTable">
+            <thead>
+              <tr>
+                <th scope="col">Data</th>
+                <th scope="col">Categoria</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Tipo</th>
+                <th scope="col" class="num">Valor (R$)</th>
+                <th scope="col">Forma</th>
+                <th scope="col" aria-label="Ações"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ÚNICO GRÁFICO: PIZZA de DESPESAS (%) -->
+      <aside class="charts card" aria-label="Gráfico de despesas">
+        <div class="card-head"><h2>Despesas (%)</h2></div>
+        <canvas id="pieChart" height="300" role="img" aria-label="Gráfico de pizza de despesas por categoria"></canvas>
+      </aside>
+    </main>
+
+    <!-- Lista de categorias -->
+    <datalist id="categories">
+      <option value="Alimentação"></option>
+      <option value="Transporte"></option>
+      <option value="Moradia"></option>
+      <option value="Lazer"></option>
+      <option value="Saúde"></option>
+      <option value="Educação"></option>
+      <option value="Compras"></option>
+      <option value="Contas"></option>
+      <option value="Impostos"></option>
+      <option value="Investimentos"></option>
+      <option value="Salário"></option>
+      <option value="Outros"></option>
+    </datalist>
+
+    <!-- Modal de transação -->
+    <dialog id="txModal" aria-labelledby="modalTitle">
+      <form id="txForm" method="dialog" class="modal">
+        <h3 id="modalTitle">Nova transação</h3>
+        <div class="fields">
+          <label for="txDate">Data
+            <input type="date" id="txDate" required />
+          </label>
+          <label for="txCategory">Categoria
+            <input type="text" id="txCategory" list="categories" placeholder="Ex.: Alimentação" required />
+          </label>
+          <label for="txDesc">Descrição
+            <input type="text" id="txDesc" placeholder="Ex.: Supermercado" />
+          </label>
+          <label for="txType">Tipo
+            <select id="txType" required>
+              <option value="Entrada">Entrada</option>
+              <option value="Saída">Saída</option>
+            </select>
+          </label>
+          <label for="txValue">Valor (R$)
+            <input type="number" id="txValue" inputmode="decimal" step="0.01" min="0" required />
+          </label>
+          <label for="txMethod">Forma de Pagamento
+            <input type="text" id="txMethod" placeholder="Cartão, Pix, Dinheiro…" />
+          </label>
+        </div>
+        <div class="actions">
+          <button type="button" id="btnDelete" class="btn danger" hidden>
+            <i class="fas fa-trash-alt" aria-hidden="true"></i> Excluir
+          </button>
+          <div class="spacer"></div>
+          <button class="btn ghost" value="cancel">Cancelar</button>
+          <button class="btn primary" value="default">Salvar</button>
+        </div>
+        <input type="hidden" id="txId" />
+      </form>
+    </dialog>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="site-footer" role="contentinfo">
+      <p>
+        <strong>Controle Financeiro</strong> — feito para <span aria-hidden="true">facilitar sua vida</span> por
+        <a href="https://github.com/tainara-m" rel="noopener" target="_blank">Tainara Martins</a>.
+        <span class="sep">•</span>
+        <span id="year"></span>
+      </p>
+    </footer>
+  </div>
+
+  <!-- Helpers simples -->
+  <script>
+    (function(){
+      const y = document.getElementById('year');
+      if (y) y.textContent = new Date().getFullYear();
+    })();
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
